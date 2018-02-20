@@ -1,0 +1,6 @@
+config rule 'temporarily_allow_lets_encrypt'
+        option name 'Temporarily Allow Lets Encrypt'
+        option target 'ACCEPT'
+        option src 'wan'
+        option dest_port '80'
+        option proto 'tcp'
