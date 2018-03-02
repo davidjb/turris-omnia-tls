@@ -4,9 +4,6 @@ ca_path="/etc/ssl/certs"
 domain="$1"
 
 mkdir -p "$certhome"
-
-# Trigger request to Let's Encrypt
-# To manually request a certificate, run the following without hook arguments
 /root/.acme.sh/acme.sh \
     --issue \
     --standalone \

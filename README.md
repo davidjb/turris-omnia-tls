@@ -1,7 +1,7 @@
 # Let's Encrypt Certificates for Turris Omnia
 
-This config utilises the Acme.sh client to issue a Let's Encrypt certificate
-for use wtih the Turris Omnia web interface.
+This config utilises the [Acme.sh](https://github.com/Neilpang/acme.sh) client
+to issue a Let's Encrypt certificate for use wtih the Turris Omnia web interface.
 
 Adapted in part from the instructions at
 <https://doc.turris.cz/doc/en/public/letencrypt_turris_lighttpd> for improved
@@ -9,20 +9,20 @@ security and simplicity.
 
 ## Key features
 
-* Acme.sh client for free TLS certificates.
+* Uses [Acme.sh](https://github.com/Neilpang/acme.sh) client for free TLS certificates.
+* Uses hook scripts to simplify issue and renewal process
 * Automatically formats certificates for lighttpd
 * Reloads lighttpd to deploy certificates
-* Opens and closes firewall to port 80 on Turris Omnia
+* Adds TLS improvements to lighttpd following [Mozilla's config
+  generator](https://mozilla.github.io/server-side-tls/ssl-config-generator/).
+* Opportunistically opens and closes firewall port 80 on Turris Omnia
 * Runs lighttpd on a separate HTTP port to port 80. This avoids needing to stop
   and start lighttpd but also avoids the issue of inadvertently exposing the
   UI to the public Internet as the firewall is opened and closed.
 
   * HSTS handles the odd case where you forget or are lazy to type in the
     `https://` at the start.  Just load the `https://` URL once and your browser
-    will remember.
-
-* Adds TLS improvements to lighttpd following [Mozilla's config
-  generator](https://mozilla.github.io/server-side-tls/ssl-config-generator/).
+    will remember for you.
 
 ## Installation
 
@@ -34,8 +34,9 @@ security and simplicity.
 1. Install `acme.sh` client:
 
        git clone https://github.com/Neilpang/acme.sh.git -b 2.7.6 /root/acme.sh
-       /root/acme.sh/acme.sh --install --nocron
-       rm -rf /root/acme.sh
+       cd /root/acme.sh
+       ./acme.sh --install --nocron
+       cd && rm -rf /root/acme.sh
 
 1. Disable the existing SSL configuration:
 
@@ -51,9 +52,12 @@ security and simplicity.
 1. Stop lighttpd; we will enable it again shortly:
 
        /etc/init.d/lighttpd stop
+
+1. Issue the certificate and reconfigure lighttpd:
+
        /root/turris-omnia-tls/cert-issue.sh domain.example.com
 
-       cp lighttpd_custom.conf /etc/lighttpd/conf.d/
+       cp /root/turris-omnia-tls/lighttpd_custom.conf /etc/lighttpd/conf.d/
        # Edit this file and replace `domain.example.com` with your FQDN
        sed -i 's/domain.example.com/your.domain.com/g' /etc/lighttpd/conf.d/lighttpd_custom.conf
 
