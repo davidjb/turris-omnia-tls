@@ -16,61 +16,56 @@ security and simplicity.
 * Runs lighttpd on a separate HTTP port to port 80. This avoids needing to stop
   and start lighttpd but also avoids the issue of inadvertently exposing the
   UI to the public Internet as the firewall is opened and closed.
-* TLS improvements for lighttpd following [Mozilla's config
+
+  * HSTS handles the odd case where you forget or are lazy to type in the
+    `https://` at the start.  Just load the `https://` URL once and your browser
+    will remember.
+
+* Adds TLS improvements to lighttpd following [Mozilla's config
   generator](https://mozilla.github.io/server-side-tls/ssl-config-generator/).
-* HSTS handles the odd case where you forget or are lazy to type in the
-  https:// at the start.  Just load the `https://` URL once and your browser
-  will remember.
 
 ## Installation
 
+1. Download this project:
+
+       opkg install git-http
+       git clone https://github.com/davidjb/turris-omnia-tls.git /root/turris-omnia-tls
+
 1. Install `acme.sh` client:
 
-       wget https://github.com/Neilpang/acme.sh/archive/2.7.6.tar.gz -O acme.tgz
-       gunzip acme.tgz && tar xf acme.tar && rm acme.tar
-       cd acme.sh-*
-       ./acme.sh --install --nocron
-       cd ..
-       rm -rf acme.sh-*
+       git clone https://github.com/Neilpang/acme.sh.git -b 2.7.6 /root/acme.sh
+       /root/acme.sh/acme.sh --install --nocron
+       rm -rf /root/acme.sh
 
-1. Lighttpd needs to stop listening on port 80 so Modify
+1. Disable the existing SSL configuration:
+
+       mv /etc/lighttpd/conf.d/ssl-enable.conf /etc/lighttpd/conf.d/ssl-enable.conf.disabled
+
+1. Lighttpd needs to stop listening on port 80 so modify
    `/etc/lighttpd/lighttpd.conf` to comment out this line:
 
        $SERVER["socket"] == "[::]:80" {   }
 
    For note, the later custom configuration changes the IPv4 port.
 
-1. Disable the existing SSL configuration:
-
-       mv /etc/lighttpd/conf.d/ssl-enable.conf /etc/lighttpd/conf.d/ssl-enable.conf.disabled
-
 1. Stop lighttpd; we will enable it again shortly:
 
        /etc/init.d/lighttpd stop
+       /root/turris-omnia-tls/cert-issue.sh domain.example.com
 
-1. Install files:
-
-       cp cert-*,allow-port-80.gw ~/.acme.sh/
        cp lighttpd_custom.conf /etc/lighttpd/conf.d/
        # Edit this file and replace `domain.example.com` with your FQDN
        sed -i 's/domain.example.com/your.domain.com/g' /etc/lighttpd/conf.d/lighttpd_custom.conf
 
-1. Issue certificate:
-
-       cd ~/.acme.sh
-       ./cert-issue.sh domain.example.com
+       /etc/init.d/lighttpd start
 
 1. Add crontab entry for renewal; pick a random minute and hour:
 
-       echo '34 0 * * * /root/.acme.sh/cert-renew.sh > /dev/null' >> /etc/crontabs/root
+       echo '34 0 * * * /root/turris-omnia-tls/cert-renew.sh > /dev/null' >> /etc/crontabs/root
 
    The renewal process will automatically re-use the settings for certificates
    that were issued.
 
-1. (Re-)start lighttpd and access your router via HTTPS.
-
-       /etc/init.d/lighttpd restart
-
 ## License
 
-MIT. See LICENSE.txt..
+MIT. See LICENSE.txt.

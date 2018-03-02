@@ -1,21 +1,19 @@
 #!/bin/sh
-# Version 1.0.0
-source ./cert-common.sh
+certhome="/etc/lighttpd/certs"
+ca_path="/etc/ssl/certs"
 domain="$1"
 
 mkdir -p "$certhome"
 
 # Trigger request to Let's Encrypt
-# To issue manual requests for certificates, run the following command
-# but without the `post-hook` or `reloadcmd` arguments.
-modify_firewall
-./acme.sh \
+# To manually request a certificate, run the following without hook arguments
+/root/.acme.sh/acme.sh \
     --issue \
     --standalone \
     --domain "$domain" \
     --keylength 4096 \
     --certhome "$certhome" \
     --ca-path "$ca_path" \
-    --post-hook "cat $certhome/$domain/$domain.cer $certhome/$domain/$domain.key > $certhome/$domain/$domain.pem" \
-    --reloadcmd "/etc/init.d/lighttpd reload"
-restore_firewall
+    --pre-hook "/root/turris-omnia-tls/pre-hook.sh '$domain'" \
+    --post-hook "/root/turris-omnia-tls/post-hook.sh '$domain'" \
+    --renew-hook "/root/turris-omnia-tls/renew-hook.sh '$domain'"
