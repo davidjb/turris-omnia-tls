@@ -16,9 +16,9 @@ security and simplicity.
 * Adds TLS improvements to lighttpd following [Mozilla's config
   generator](https://mozilla.github.io/server-side-tls/ssl-config-generator/).
 * Opportunistically opens and closes firewall port 80 on Turris Omnia
-* Runs lighttpd on a separate HTTP port to port 80. This avoids needing to stop
-  and start lighttpd but also avoids the issue of inadvertently exposing the
-  UI to the public Internet as the firewall is opened and closed.
+* Runs lighttpd on a separate HTTP port to port 80. This avoids needing to
+  stop and start lighttpd but also fully avoids the issue of inadvertently
+  exposing the UI to the public Internet as the firewall is opened and closed.
 
   * HSTS handles the odd case where you forget or are lazy to type in the
     `https://` at the start.  Just load the `https://` URL once and your browser
