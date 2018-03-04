@@ -13,4 +13,5 @@ mkdir -p "$certhome"
     --ca-path "$ca_path" \
     --pre-hook "/root/turris-omnia-tls/pre-hook.sh '$domain'" \
     --post-hook "/root/turris-omnia-tls/post-hook.sh '$domain'" \
-    --renew-hook "/root/turris-omnia-tls/renew-hook.sh '$domain'"
+    --renew-hook "/root/turris-omnia-tls/renew-hook.sh '$domain'" \
+    --reloadcmd "/root/turris-omnia-tls/reloadcmd.sh '$domain'"
