@@ -33,7 +33,7 @@ security and simplicity.
 
 1. Install `acme.sh` client:
 
-       git clone https://github.com/Neilpang/acme.sh.git -b 2.7.6 /root/acme.sh
+       git clone https://github.com/Neilpang/acme.sh.git -b 2.7.7 /root/acme.sh
        cd /root/acme.sh
        ./acme.sh --install --nocron
        cd && rm -rf /root/acme.sh
