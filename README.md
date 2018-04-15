@@ -69,6 +69,18 @@ security and simplicity.
 
    The renewal process will automatically re-use the settings for certificates
    that were issued.
+   
+## Issuing more certificates
+
+Run the following:
+
+    /root/turris-omnia-tls/cert-issue.sh extra.example.com
+    
+Note that this will automatically configure relevant hooks to run before and after certificate
+issuance.  If you want to adjust this behaviour your can either copy and customise the command
+inside `cert-issue.sh` before you run it the first time or go and modify the configuration
+that `acme.sh` generates in `/etc/lighttpd/certs/extra.example.com/extra.example.com.conf`,
+where `extra.example.com` is the name of your domain.
 
 ## License
 
