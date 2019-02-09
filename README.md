@@ -35,8 +35,9 @@ security and simplicity.
    https://github.com/Neilpang/acme.sh/releases.  Note the release version (which is the
    tag name); you'll use it in the next step, substituting for `[VERSION]`.
 
-1. Install `acme.sh` client:
+1. Install `acme.sh` client and its dependency, `socat`:
 
+       opkg install socat
        git clone https://github.com/Neilpang/acme.sh.git -b [VERSION] /root/acme.sh
        cd /root/acme.sh
        ./acme.sh --install --nocron
