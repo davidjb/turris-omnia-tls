@@ -30,13 +30,16 @@ security and simplicity.
 
        opkg install git-http
        git clone https://github.com/davidjb/turris-omnia-tls.git /root/turris-omnia-tls
+       
+1. Deterime the latest version of `acme.sh` by checking
+   https://github.com/Neilpang/acme.sh/releases.  Note the release version (which is the
+   tag name); you'll use it in the next step, substituting for `[VERSION]`.
 
 1. Install `acme.sh` client:
 
-       git clone https://github.com/Neilpang/acme.sh.git -b 2.7.8 /root/acme.sh
+       git clone https://github.com/Neilpang/acme.sh.git -b [VERSION] /root/acme.sh
        cd /root/acme.sh
        ./acme.sh --install --nocron
-       cd && rm -rf /root/acme.sh
 
 1. Disable the existing SSL configuration:
 
