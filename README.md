@@ -20,9 +20,9 @@ security and simplicity.
   stop and start lighttpd but also fully avoids the issue of inadvertently
   exposing the UI to the public Internet as the firewall is opened and closed.
 
-  * HSTS handles the odd case where you forget or are lazy to type in the
+  * HSTS handles the odd case where you forget or are too lazy to type in the
     `https://` at the start.  Just load the `https://` URL once and your browser
-    will remember for you.
+    will remember for you forever.
 
 ## Installation
 
@@ -33,13 +33,17 @@ external storage on a Turris device, but you can install wherever you'd like.
 
        opkg install git-http
        git clone https://github.com/davidjb/turris-omnia-tls.git /srv/turris-omnia-tls
+       
+1. Deterime the latest version of `acme.sh` by checking
+   https://github.com/Neilpang/acme.sh/releases.  Note the release version (which is the
+   tag name); you'll use it in the next step, substituting for `[VERSION]`.
 
-1. Install `acme.sh` client:
+1. Install `acme.sh` client and its dependency, `socat`:
 
-       git clone https://github.com/Neilpang/acme.sh.git -b 2.7.6 /srv/acme.sh
-       cd /srv/acme.sh
+       opkg install socat
+       git clone https://github.com/Neilpang/acme.sh.git -b [VERSION] /root/acme.sh
+       cd /root/acme.sh
        ./acme.sh --install --nocron
-       cd && rm -rf /srv/acme.sh
 
 1. Disable the existing SSL configuration:
 
@@ -72,6 +76,18 @@ external storage on a Turris device, but you can install wherever you'd like.
 
    The renewal process will automatically re-use the settings for certificates
    that were issued.
+   
+## Issuing more certificates
+
+Run the following:
+
+    /root/turris-omnia-tls/cert-issue.sh extra.example.com
+    
+Note that this will automatically configure relevant hooks to run before and after certificate
+issuance.  If you want to adjust this behaviour your can either copy and customise the command
+inside `cert-issue.sh` before you run it the first time or go and modify the configuration
+that `acme.sh` generates in `/etc/lighttpd/certs/extra.example.com/extra.example.com.conf`,
+where `extra.example.com` is the name of your domain.
 
 ## License
 
