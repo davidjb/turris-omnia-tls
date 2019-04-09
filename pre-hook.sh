@@ -7,7 +7,7 @@ firewall_cfg_backup="$firewall_cfg.bak"
 cp "$firewall_cfg" "$firewall_cfg_backup"
 
 # Update firewall rules to allow access via port 80 from internet to acme.sh
-cat /root/turris-omnia-tls/allow-port-80.gw >> "$firewall_cfg"
+cat /srv/turris-omnia-tls/allow-port-80.gw >> "$firewall_cfg"
 
 if ! /etc/init.d/firewall reload
 then

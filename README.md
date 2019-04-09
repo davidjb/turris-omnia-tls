@@ -43,7 +43,7 @@ external storage on a Turris device, but you can install wherever you'd like.
        opkg install socat
        git clone https://github.com/Neilpang/acme.sh.git -b [VERSION] /srv/acme.sh
        cd /srv/acme.sh
-       ./acme.sh --install --nocron
+       ./acme.sh --install --home /srv/.acme.sh --nocron
 
 1. Disable the existing SSL configuration:
 
