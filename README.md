@@ -41,8 +41,8 @@ external storage on a Turris device, but you can install wherever you'd like.
 1. Install `acme.sh` client and its dependency, `socat`:
 
        opkg install socat
-       git clone https://github.com/Neilpang/acme.sh.git -b [VERSION] /root/acme.sh
-       cd /root/acme.sh
+       git clone https://github.com/Neilpang/acme.sh.git -b [VERSION] /srv/acme.sh
+       cd /srv/acme.sh
        ./acme.sh --install --nocron
 
 1. Disable the existing SSL configuration:
@@ -81,7 +81,7 @@ external storage on a Turris device, but you can install wherever you'd like.
 
 Run the following:
 
-    /root/turris-omnia-tls/cert-issue.sh extra.example.com
+    /srv/turris-omnia-tls/cert-issue.sh extra.example.com
     
 Note that this will automatically configure relevant hooks to run before and after certificate
 issuance.  If you want to adjust this behaviour your can either copy and customise the command
