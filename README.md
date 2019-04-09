@@ -26,17 +26,20 @@ security and simplicity.
 
 ## Installation
 
+This installs the project and files in `/srv`, which is the default path for
+external storage on a Turris device, but you can install wherever you'd like.
+
 1. Download this project:
 
        opkg install git-http
-       git clone https://github.com/davidjb/turris-omnia-tls.git /root/turris-omnia-tls
+       git clone https://github.com/davidjb/turris-omnia-tls.git /srv/turris-omnia-tls
 
 1. Install `acme.sh` client:
 
-       git clone https://github.com/Neilpang/acme.sh.git -b 2.7.6 /root/acme.sh
-       cd /root/acme.sh
+       git clone https://github.com/Neilpang/acme.sh.git -b 2.7.6 /srv/acme.sh
+       cd /srv/acme.sh
        ./acme.sh --install --nocron
-       cd && rm -rf /root/acme.sh
+       cd && rm -rf /srv/acme.sh
 
 1. Disable the existing SSL configuration:
 
@@ -55,9 +58,9 @@ security and simplicity.
 
 1. Issue the certificate and reconfigure lighttpd:
 
-       /root/turris-omnia-tls/cert-issue.sh domain.example.com
+       /srv/turris-omnia-tls/cert-issue.sh domain.example.com
 
-       cp /root/turris-omnia-tls/lighttpd_custom.conf /etc/lighttpd/conf.d/
+       cp /srv/turris-omnia-tls/lighttpd_custom.conf /etc/lighttpd/conf.d/
        # Edit this file and replace `domain.example.com` with your FQDN
        sed -i 's/domain.example.com/your.domain.com/g' /etc/lighttpd/conf.d/lighttpd_custom.conf
 
@@ -65,7 +68,7 @@ security and simplicity.
 
 1. Add crontab entry for renewal; pick a random minute and hour:
 
-       echo '34 0 * * * /root/turris-omnia-tls/cert-renew.sh > /dev/null' >> /etc/crontabs/root
+       echo '34 0 * * * /srv/turris-omnia-tls/cert-renew.sh > /dev/null' >> /etc/crontabs/root
 
    The renewal process will automatically re-use the settings for certificates
    that were issued.
