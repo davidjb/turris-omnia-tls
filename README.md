@@ -7,6 +7,9 @@ Adapted in part from the instructions at
 <https://doc.turris.cz/doc/en/public/letencrypt_turris_lighttpd> for improved
 security and simplicity.
 
+This may also work for other OpenWrt devices but has not yet been tested in such
+an environment.
+
 ## Key features
 
 * Uses [Acme.sh](https://github.com/Neilpang/acme.sh) client for free TLS certificates.
