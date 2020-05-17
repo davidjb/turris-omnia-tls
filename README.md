@@ -15,7 +15,7 @@ an environment.
 * Uses [Acme.sh](https://github.com/Neilpang/acme.sh) client for free TLS certificates.
 * Uses hook scripts to simplify issue and renewal process
 * Automatically formats certificates for lighttpd
-* Reloads lighttpd to deploy certificates
+* Restarts lighttpd to deploy certificates
 * Adds TLS improvements to lighttpd following [Mozilla's config
   generator](https://mozilla.github.io/server-side-tls/ssl-config-generator/).
 * Opportunistically opens and closes firewall port 80 on Turris Omnia
