@@ -1,27 +1,25 @@
 # Let's Encrypt Certificates for Turris Omnia
 
-This config utilises the [Acme.sh](https://github.com/Neilpang/acme.sh) client
-to issue a Let's Encrypt certificate for use wtih the Turris Omnia web interface.
+This config utilises the [Acme.sh](https://github.com/acmesh-official/acme.sh) client
+to issue Let's Encrypt certificates for use wtih the Turris Omnia web interface.
+
+If you're looking to issue and manage just a single certificate within OpenWrt, see
+the official, packaged-based solution at https://github.com/acmesh-official/acme.sh/wiki/How-to-run-on-OpenWRT.
 
 Adapted in part from the instructions at
 <https://doc.turris.cz/doc/en/public/letencrypt_turris_lighttpd> for improved
-security and simplicity.
-
-This may also work for other OpenWrt devices but has not yet been tested in such
-an environment.
+security and simplicity; this setup should work fine for other OpenWrt devices
+using lighttpd.
 
 ## Key features
 
-* Uses [Acme.sh](https://github.com/Neilpang/acme.sh) client for free TLS certificates.
+* Uses [Acme.sh](https://github.com/acmesh-official/acme.sh) client for free TLS certificates
 * Uses hook scripts to simplify issue and renewal process
-* Automatically formats certificates for lighttpd
-* Restarts lighttpd to deploy certificates
-* Adds TLS improvements to lighttpd following [Mozilla's config
+* Opportunistically opens and closes firewall port 80
+* Restarts lighttpd to deploy certificates (requires lighttpd 1.4.53 for `ssl.privkey` support)
+* Configures lighttpd for TLSv1.3 only following [Mozilla's config
   generator](https://mozilla.github.io/server-side-tls/ssl-config-generator/).
-* Opportunistically opens and closes firewall port 80 on Turris Omnia
-* Runs lighttpd on a separate HTTP port to port 80. This avoids needing to
-  stop and start lighttpd but also fully avoids the issue of inadvertently
-  exposing the UI to the public Internet as the firewall is opened and closed.
+* Disables lighttpd from running insecurely on port 80
 
   * HSTS handles the odd case where you forget or are too lazy to type in the
     `https://` at the start.  Just load the `https://` URL once and your browser
@@ -56,8 +54,6 @@ external storage on a Turris device, but you can install wherever you'd like.
    `/etc/lighttpd/lighttpd.conf` to comment out this line:
 
        $SERVER["socket"] == "[::]:80" {   }
-
-   For note, the later custom configuration changes the IPv4 port.
 
 1. Stop lighttpd; we will enable it again shortly:
 
