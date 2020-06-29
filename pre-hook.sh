@@ -1,16 +1,5 @@
 #!/bin/sh
 
-firewall_cfg="/etc/config/firewall"
-firewall_cfg_backup="$firewall_cfg.bak"
-
-# Backup firewall config
-cp "$firewall_cfg" "$firewall_cfg_backup"
-
-# Update firewall rules to allow access via port 80 from internet to acme.sh
-cat /srv/turris-omnia-tls/allow-port-80.gw >> "$firewall_cfg"
-
-if ! /etc/init.d/firewall reload
-then
-    echo 'Failed to reload firewall, aborting!'
-    exit 1
-fi
+# Update firewall rules to allow access to port 80 from internet to acme.sh
+iptables -I input_rule -p tcp --dport 80 -j ACCEPT -m comment --comment "acme.sh" || return 1
+ip6tables -I input_rule -p tcp --dport 80 -j ACCEPT -m comment --comment "acme.sh" || return 1
