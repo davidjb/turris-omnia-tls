@@ -35,7 +35,7 @@ external storage on a Turris device, but you can install wherever you'd like.
        opkg install git-http
        git clone https://github.com/davidjb/turris-omnia-tls.git /srv/turris-omnia-tls
        
-1. Deterime the latest version of `acme.sh` by checking
+1. Determine the latest version of `acme.sh` by checking
    https://github.com/acmesh-official/acme.sh/releases.  Note the release version (which is the
    tag name); you'll use it in the next step, substituting for `[VERSION]`.
 
