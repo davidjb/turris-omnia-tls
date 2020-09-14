@@ -88,6 +88,15 @@ inside `cert-issue.sh` before you run it the first time or go and modify the con
 that `acme.sh` generates in `/etc/lighttpd/certs/extra.example.com/extra.example.com.conf`,
 where `extra.example.com` is the name of your domain.
 
+## Upgrading acme.sh
+
+Run the following; after `fetch`ing, you'll see the latest version tag:
+
+    cd /srv/acme.sh
+    git fetch
+    git checkout [VERSION]
+    ./acme.sh --install --home /srv/.acme.sh --nocron
+
 ## License
 
 MIT. See LICENSE.txt.
