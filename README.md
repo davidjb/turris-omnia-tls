@@ -34,7 +34,7 @@ external storage on a Turris device, but you can install wherever you'd like.
 
        opkg install git-http
        git clone https://github.com/davidjb/turris-omnia-tls.git /srv/turris-omnia-tls
-       
+
 1. Determine the latest version of `acme.sh` by checking
    https://github.com/acmesh-official/acme.sh/releases.  Note the release version (which is the
    tag name); you'll use it in the next step, substituting for `[VERSION]`.
@@ -59,13 +59,21 @@ external storage on a Turris device, but you can install wherever you'd like.
 
        /etc/init.d/lighttpd stop
 
-1. Issue the certificate and reconfigure lighttpd:
+1. Issue the certificate:
 
-       /srv/turris-omnia-tls/cert-issue.sh domain.example.com
+       /srv/turris-omnia-tls/cert-issue.sh your.domain.com
+
+1. Reconfigure lighttpd with the supplied custom configuration:
 
        cp /srv/turris-omnia-tls/lighttpd_custom.conf /etc/lighttpd/conf.d/
-       # Edit this file and replace `domain.example.com` with your FQDN
+
+   Inside this file, replace the `domain.example.com` placeholders with your
+   FQDN. You can do this automatically by running the following command,
+   taking care to specify your FQDN in place of `your.domain.com`:
+
        sed -i 's/domain.example.com/your.domain.com/g' /etc/lighttpd/conf.d/lighttpd_custom.conf
+
+1. Restart `lighttpd`:
 
        /etc/init.d/lighttpd start
 
@@ -75,13 +83,13 @@ external storage on a Turris device, but you can install wherever you'd like.
 
    The renewal process will automatically re-use the settings for certificates
    that were issued.
-   
+
 ## Issuing more certificates
 
 Run the following:
 
     /srv/turris-omnia-tls/cert-issue.sh extra.example.com
-    
+
 Note that this will automatically configure relevant hooks to run before and after certificate
 issuance.  If you want to adjust this behaviour your can either copy and customise the command
 inside `cert-issue.sh` before you run it the first time or go and modify the configuration
