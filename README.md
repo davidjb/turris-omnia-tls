@@ -1,7 +1,8 @@
 # Let's Encrypt Certificates for Turris Omnia
 
 This config utilises the [Acme.sh](https://github.com/acmesh-official/acme.sh) client
-to issue Let's Encrypt certificates for use wtih the Turris Omnia web interface.
+to issue [Let's Encrypt](https://letsencrypt.org/) certificates for use wtih
+the Turris Omnia web interface.
 
 If you're looking to issue and manage just a single certificate within OpenWrt, see
 the official, packaged-based solution at https://github.com/acmesh-official/acme.sh/wiki/How-to-run-on-OpenWRT.
@@ -13,7 +14,7 @@ using lighttpd.
 
 ## Key features
 
-* Uses [Acme.sh](https://github.com/acmesh-official/acme.sh) client for free TLS certificates
+* Uses [Acme.sh](https://github.com/acmesh-official/acme.sh) client for free TLS certificates from [Let's Encrypt](https://letsencrypt.org/)
 * Uses hook scripts to simplify issue and renewal process
 * Opportunistically opens and closes firewall port 80
 * Restarts lighttpd to deploy certificates
