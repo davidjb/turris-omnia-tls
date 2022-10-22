@@ -16,9 +16,9 @@ using lighttpd.
 * Uses [Acme.sh](https://github.com/acmesh-official/acme.sh) client for free TLS certificates
 * Uses hook scripts to simplify issue and renewal process
 * Opportunistically opens and closes firewall port 80
-* Restarts lighttpd to deploy certificates (requires lighttpd 1.4.53 for `ssl.privkey` support)
-* Configures lighttpd for TLSv1.3 only following [Mozilla's config
-  generator](https://mozilla.github.io/server-side-tls/ssl-config-generator/).
+* Restarts lighttpd to deploy certificates
+* Configures lighttpd for TLSv1.3 only following the [Mozilla SSL Configuration
+  Generator](https://ssl-config.mozilla.org/).
 * Disables lighttpd from running insecurely on port 80
 
   * HSTS handles the odd case where you forget or are too lazy to type in the
@@ -39,39 +39,52 @@ external storage on a Turris device, but you can install wherever you'd like.
    https://github.com/acmesh-official/acme.sh/releases.  Note the release version (which is the
    tag name); you'll use it in the next step, substituting for `[VERSION]`.
 
-1. Install `acme.sh` client and its dependency, `socat`:
+1. Install `acme.sh` client and its dependency, `socat`; taking care to
+   substitute `[VERSION]` and `[YOUREMAIL]` with correct values:
 
        opkg install socat
        git clone https://github.com/acmesh-official/acme.sh -b [VERSION] /srv/acme.sh
        cd /srv/acme.sh
-       ./acme.sh --install --home /srv/.acme.sh --nocron
+       ./acme.sh --install --home /srv/.acme.sh --nocron --email [YOUREMAIL] --set-default-ca --server letsencrypt
 
-1. Disable the existing SSL configuration:
+1. Disable the existing SSL configuration by removing the `lighttpd-https-cert`
+   package:
 
-       mv /etc/lighttpd/conf.d/ssl-enable.conf /etc/lighttpd/conf.d/ssl-enable.conf.disabled
+       opkg remove lighttpd-https-cert
+
+1. Stop `updater` from automatically reinstalling the `lighttpd-https-cert`
+   package:
+
+       cp /srv/turris-omnia-tls/updater_custom.lua /etc/updater/conf.d/no-upstream-ssl.lua
+
+1. Make sure the `lighttpd-mod-openssl` package is installed:
+
+       opkg install lighttpd-mod-openssl
 
 1. Lighttpd needs to stop listening on port 80 so modify
-   `/etc/lighttpd/lighttpd.conf` to comment out this line:
+   `/etc/lighttpd/conf.d/90-turris-root.conf` to comment out these lines:
 
+       $SERVER["socket"] == "*:80"    {  }
        $SERVER["socket"] == "[::]:80" {   }
 
 1. Stop lighttpd; we will enable it again shortly:
 
        /etc/init.d/lighttpd stop
 
-1. Issue the certificate:
+1. Issue the certificate, taking care to specify your FQDN in place of
+   `[YOUR.DOMAIN.COM]`:
 
-       /srv/turris-omnia-tls/cert-issue.sh your.domain.com
+       /srv/turris-omnia-tls/cert-issue.sh [YOUR.DOMAIN.COM]
 
 1. Reconfigure lighttpd with the supplied custom configuration:
 
-       cp /srv/turris-omnia-tls/lighttpd_custom.conf /etc/lighttpd/conf.d/
+       cp /srv/turris-omnia-tls/lighttpd_custom.conf /etc/lighttpd/conf.d/40-ssl-acme-enable.conf
 
    Inside this file, replace the `domain.example.com` placeholders with your
    FQDN. You can do this automatically by running the following command,
-   taking care to specify your FQDN in place of `[YOUR.DOMAIN.COM]`:
+   again taking care to specify your FQDN in place of `[YOUR.DOMAIN.COM]`:
 
-       sed -i 's/domain.example.com/[YOUR.DOMAIN.COM]/g' /etc/lighttpd/conf.d/lighttpd_custom.conf
+       sed -i 's/domain.example.com/[YOUR.DOMAIN.COM]/g' /etc/lighttpd/conf.d/40-ssl-acme-enable.conf
 
 1. Restart `lighttpd`:
 
