@@ -36,8 +36,9 @@ external storage on a Turris device, but you can install wherever you'd like.
        git clone https://github.com/davidjb/turris-omnia-tls.git /srv/turris-omnia-tls
 
 1. Determine the latest version of `acme.sh` by checking
-   https://github.com/acmesh-official/acme.sh/releases.  Note the release version (which is the
-   tag name); you'll use it in the next step, substituting for `[VERSION]`.
+   https://github.com/acmesh-official/acme.sh/releases.  Note the release
+   version (which is the tag name); you'll use it in the next step,
+   substituting for `[VERSION]`.
 
 1. Install `acme.sh` client and its dependency, `socat`; taking care to
    substitute `[VERSION]` and `[YOUREMAIL]` with correct values:
@@ -47,8 +48,8 @@ external storage on a Turris device, but you can install wherever you'd like.
        cd /srv/acme.sh
        ./acme.sh --install --home /srv/.acme.sh --nocron --email [YOUREMAIL] --set-default-ca --server letsencrypt
 
-1. Disable the existing SSL configuration by removing the `lighttpd-https-cert`
-   package:
+1. Disable the existing SSL configuration by removing the
+   `lighttpd-https-cert` package:
 
        opkg remove lighttpd-https-cert
 
