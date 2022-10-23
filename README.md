@@ -14,7 +14,8 @@ using lighttpd.
 
 ## Key features
 
-* Uses [Acme.sh](https://github.com/acmesh-official/acme.sh) client for free TLS certificates from [Let's Encrypt](https://letsencrypt.org/)
+* Uses the [acme.sh](https://github.com/acmesh-official/acme.sh) client to
+  obtain free TLS certificates from [Let's Encrypt](https://letsencrypt.org/)
 * Uses hook scripts to simplify issue and renewal process
 * Opportunistically opens and closes firewall port 80
 * Restarts lighttpd to deploy certificates
@@ -29,22 +30,16 @@ header](https://en.wikipedia.org/wiki/HTTP_Strict_Transport_Security).
 This installs the project and files in `/srv`, which is the default path for
 external storage on a Turris device, but you can install wherever you'd like.
 
-1. Download this project:
+1. Download this project, including the `acme.sh` submodule:
 
        opkg install git-http
-       git clone https://github.com/davidjb/turris-omnia-tls.git /srv/turris-omnia-tls
+       git clone --recurse-submodules https://github.com/davidjb/turris-omnia-tls.git /srv/turris-omnia-tls
 
-1. Determine the latest version of `acme.sh` by checking
-   https://github.com/acmesh-official/acme.sh/releases.  Note the release
-   version (which is the tag name); you'll use it in the next step,
-   substituting for `[VERSION]`.
-
-1. Install `acme.sh` client and its dependency, `socat`; taking care to
-   substitute `[VERSION]` and `[YOUREMAIL]` with correct values:
+1. Install the `acme.sh` client and its dependency, `socat`; taking care to
+   substitute `[YOUREMAIL]` with correct values:
 
        opkg install socat
-       git clone https://github.com/acmesh-official/acme.sh -b [VERSION] /srv/acme.sh
-       cd /srv/acme.sh
+       cd /srv/turris-omnia-tls/acme.sh
        ./acme.sh --install --home /srv/.acme.sh --nocron --email [YOUREMAIL]
        ./acme.sh --set-default-ca --home /srv/.acme.sh --server letsencrypt
 
@@ -108,13 +103,14 @@ inside `cert-issue.sh` before you run it the first time or go and modify the con
 that `acme.sh` generates in `/etc/lighttpd/certs/extra.example.com/extra.example.com.conf`,
 where `extra.example.com` is the name of your domain.
 
-## Upgrading acme.sh
+## Upgrading turris-omnia-tls and acme.sh
 
-Run the following; after `fetch`ing, you'll see the latest version tag:
+Run the following:
 
-    cd /srv/acme.sh
-    git fetch
-    git checkout [VERSION]
+    cd /srv/turris-omnia-tls
+    git pull
+    git submodule update --remote acme.sh
+    cd acme.sh
     ./acme.sh --install --home /srv/.acme.sh --nocron
 
 ## License
