@@ -72,14 +72,18 @@ external storage on a Turris device, but you can install wherever you'd like.
        /etc/init.d/lighttpd restart
 
 1. Issue the certificate, taking care to specify your FQDN in place of
-   `[YOUR.DOMAIN.COM]`:
+   `[HOSTNAME.DOMAIN.COM]`:
 
-       /srv/turris-omnia-tls/cert-issue.sh [YOUR.DOMAIN.COM]
+       /srv/turris-omnia-tls/cert-issue.sh [HOSTNAME.DOMAIN.COM]
 
 1. Reconfigure lighttpd to enable TLS and to use the new certificates, taking
-   care to replace the %TOT_FQDN% placeholder inside the template file:
+   care to replace the %TOT_FQDN% and %TOT_HOSTNAME% placeholders inside the
+   template file:
 
-       sed -e "s|%TOT_FQDN%|turris.example.com|g" /srv/turris-omnia-tls/lighttpd_tls.conf > /etc/lighttpd/conf.d/40-acme-tls.conf
+       sed \
+           -e "s|%TOT_FQDN%|turris.example.com|g" \
+           -e "s|%TOT_HOSTNAME%|turris|g" \
+           /srv/turris-omnia-tls/lighttpd_tls.conf > /etc/lighttpd/conf.d/40-acme-tls.conf
 
 1. Restart `lighttpd` again:
 
