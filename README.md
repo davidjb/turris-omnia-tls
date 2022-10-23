@@ -20,11 +20,9 @@ using lighttpd.
 * Restarts lighttpd to deploy certificates
 * Configures lighttpd for TLSv1.3 only following the [Mozilla SSL Configuration
   Generator](https://ssl-config.mozilla.org/).
-* Disables lighttpd from running insecurely on port 80
-
-  * HSTS handles the odd case where you forget or are too lazy to type in the
-    `https://` at the start.  Just load the `https://` URL once and your browser
-    will remember for you forever.
+* Configures lighttpd to upgrade unencrypted connections.
+* Configures the [HSTS 
+header](https://en.wikipedia.org/wiki/HTTP_Strict_Transport_Security).
 
 ## Installation
 
@@ -64,34 +62,28 @@ external storage on a Turris device, but you can install wherever you'd like.
 
        opkg install lighttpd-mod-openssl
 
-1. Lighttpd needs to stop listening on port 80 so modify
-   `/etc/lighttpd/conf.d/90-turris-root.conf` to comment out these lines:
+1. Reconfigure lighttpd to support the `acme` webroot, taking care to replace
+   the %TOT_BASEDIR% placeholder inside the template file:
 
-       $SERVER["socket"] == "*:80"    {  }
-       $SERVER["socket"] == "[::]:80" {   }
+       sed -e "s|%TOT_BASEDIR%|/srv/turris-omnia-tls|g" /srv/turris-omnia-tls/lighttpd_webroot.conf > /etc/lighttpd/conf.d/39-acme-webroot.conf
 
-1. Stop lighttpd; we will enable it again shortly:
+1. Restart `lighttpd`:
 
-       /etc/init.d/lighttpd stop
+       /etc/init.d/lighttpd restart
 
 1. Issue the certificate, taking care to specify your FQDN in place of
    `[YOUR.DOMAIN.COM]`:
 
        /srv/turris-omnia-tls/cert-issue.sh [YOUR.DOMAIN.COM]
 
-1. Reconfigure lighttpd with the supplied custom configuration:
+1. Reconfigure lighttpd to enable TLS and to use the new certificates, taking
+   care to replace the %TOT_FQDN% placeholder inside the template file:
 
-       cp /srv/turris-omnia-tls/lighttpd_custom.conf /etc/lighttpd/conf.d/40-ssl-acme-enable.conf
+       sed -e "s|%TOT_FQDN%|turris.example.com|g" /srv/turris-omnia-tls/lighttpd_tls.conf > /etc/lighttpd/conf.d/40-acme-tls.conf
 
-   Inside this file, replace the `domain.example.com` placeholders with your
-   FQDN. You can do this automatically by running the following command,
-   again taking care to specify your FQDN in place of `[YOUR.DOMAIN.COM]`:
+1. Restart `lighttpd` again:
 
-       sed -i 's/domain.example.com/[YOUR.DOMAIN.COM]/g' /etc/lighttpd/conf.d/40-ssl-acme-enable.conf
-
-1. Restart `lighttpd`:
-
-       /etc/init.d/lighttpd start
+       /etc/init.d/lighttpd restart
 
 1. Add crontab entry for renewal; pick a random minute and hour:
 

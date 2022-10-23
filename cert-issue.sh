@@ -1,13 +1,16 @@
 #!/bin/sh
 certhome="/etc/lighttpd/certs"
 ca_path="/etc/ssl/certs"
+webroot="/src/turris-omnia-tls/var/webroot"
 domain="$1"
 
 mkdir -p "$certhome"
+mkdir -p "$webroot"
+
 /srv/.acme.sh/acme.sh \
     --home "/srv/.acme.sh" \
     --issue \
-    --standalone \
+    --webroot "$webroot" \
     --domain "$domain" \
     --keylength 4096 \
     --certhome "$certhome" \
