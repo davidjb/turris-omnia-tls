@@ -14,90 +14,47 @@ using lighttpd.
 
 ## Key features
 
-* Uses [Acme.sh](https://github.com/acmesh-official/acme.sh) client for free TLS certificates from [Let's Encrypt](https://letsencrypt.org/)
+* Uses the [acme.sh](https://github.com/acmesh-official/acme.sh) client to
+  obtain free TLS certificates from [Let's Encrypt](https://letsencrypt.org/)
 * Uses hook scripts to simplify issue and renewal process
 * Opportunistically opens and closes firewall port 80
 * Restarts lighttpd to deploy certificates
 * Configures lighttpd for TLSv1.3 only following the [Mozilla SSL Configuration
   Generator](https://ssl-config.mozilla.org/).
-* Disables lighttpd from running insecurely on port 80
-
-  * HSTS handles the odd case where you forget or are too lazy to type in the
-    `https://` at the start.  Just load the `https://` URL once and your browser
-    will remember for you forever.
+* Configures lighttpd to upgrade unencrypted connections.
+* Configures the [HSTS 
+header](https://en.wikipedia.org/wiki/HTTP_Strict_Transport_Security).
 
 ## Installation
 
 This installs the project and files in `/srv`, which is the default path for
 external storage on a Turris device, but you can install wherever you'd like.
 
-1. Download this project:
+1. Download this project, including the `acme.sh` submodule:
 
        opkg install git-http
-       git clone https://github.com/davidjb/turris-omnia-tls.git /srv/turris-omnia-tls
+       git clone --recurse-submodules https://github.com/davidjb/turris-omnia-tls.git /srv/turris-omnia-tls
 
-1. Determine the latest version of `acme.sh` by checking
-   https://github.com/acmesh-official/acme.sh/releases.  Note the release
-   version (which is the tag name); you'll use it in the next step,
-   substituting for `[VERSION]`.
+1. Run the `install.sh` script and answer the questions:
 
-1. Install `acme.sh` client and its dependency, `socat`; taking care to
-   substitute `[VERSION]` and `[YOUREMAIL]` with correct values:
+       /srv/turris-omnia-tls/install.sh
 
-       opkg install socat
-       git clone https://github.com/acmesh-official/acme.sh -b [VERSION] /srv/acme.sh
-       cd /srv/acme.sh
-       ./acme.sh --install --home /srv/.acme.sh --nocron --email [YOUREMAIL] --set-default-ca --server letsencrypt
+1. Alternatively, the answer to the questions can be provided via environment
+   variables for non-interactive/scripted use (check the source of `install.sh`
+   for a current list of supported variables):
 
-1. Disable the existing SSL configuration by removing the
-   `lighttpd-https-cert` package:
+       TOT_EMAIL="foo@example.com" TOT_FQDN="turris.example.com" /srv/turris-omnia-tls/install.sh
 
-       opkg remove lighttpd-https-cert
+## Uninstallation
 
-1. Stop `updater` from automatically reinstalling the `lighttpd-https-cert`
-   package:
+Note that this will not touch issued certificates, which will be left in place
+under `/etc/lighttpd/certs`. Also, `acme.sh` related state information will be
+left untouched under the `/srv/turris-omnia-tls/var/` hierarchy.
 
-       cp /srv/turris-omnia-tls/updater_custom.lua /etc/updater/conf.d/no-upstream-ssl.lua
+1. Run the `uninstall.sh` script to uninstall modifications performed by the
+   `install.sh` script:
 
-1. Make sure the `lighttpd-mod-openssl` package is installed:
-
-       opkg install lighttpd-mod-openssl
-
-1. Lighttpd needs to stop listening on port 80 so modify
-   `/etc/lighttpd/conf.d/90-turris-root.conf` to comment out these lines:
-
-       $SERVER["socket"] == "*:80"    {  }
-       $SERVER["socket"] == "[::]:80" {   }
-
-1. Stop lighttpd; we will enable it again shortly:
-
-       /etc/init.d/lighttpd stop
-
-1. Issue the certificate, taking care to specify your FQDN in place of
-   `[YOUR.DOMAIN.COM]`:
-
-       /srv/turris-omnia-tls/cert-issue.sh [YOUR.DOMAIN.COM]
-
-1. Reconfigure lighttpd with the supplied custom configuration:
-
-       cp /srv/turris-omnia-tls/lighttpd_custom.conf /etc/lighttpd/conf.d/40-ssl-acme-enable.conf
-
-   Inside this file, replace the `domain.example.com` placeholders with your
-   FQDN. You can do this automatically by running the following command,
-   again taking care to specify your FQDN in place of `[YOUR.DOMAIN.COM]`:
-
-       sed -i 's/domain.example.com/[YOUR.DOMAIN.COM]/g' /etc/lighttpd/conf.d/40-ssl-acme-enable.conf
-
-1. Restart `lighttpd`:
-
-       /etc/init.d/lighttpd start
-
-1. Add crontab entry for renewal; pick a random minute and hour:
-
-       echo '34 0 * * * /srv/turris-omnia-tls/cert-renew.sh > /dev/null' >> /etc/crontabs/root
-
-   The renewal process will automatically re-use the settings for certificates
-   that were issued.
+       /srv/turris-omnia-tls/uninstall.sh
 
 ## Issuing more certificates
 
@@ -111,15 +68,14 @@ inside `cert-issue.sh` before you run it the first time or go and modify the con
 that `acme.sh` generates in `/etc/lighttpd/certs/extra.example.com/extra.example.com.conf`,
 where `extra.example.com` is the name of your domain.
 
-## Upgrading acme.sh
+## Upgrading turris-omnia-tls and acme.sh
 
-Run the following; after `fetch`ing, you'll see the latest version tag:
+Run the following:
 
-    cd /srv/acme.sh
-    git fetch
-    git checkout [VERSION]
-    ./acme.sh --install --home /srv/.acme.sh --nocron
-
+    cd /srv/turris-omnia-tls
+    git pull --recurse-submodules
+    ./install.sh
+   
 ## License
 
 MIT. See LICENSE.txt.
