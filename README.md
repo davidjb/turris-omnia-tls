@@ -40,7 +40,7 @@ external storage on a Turris device, but you can install wherever you'd like.
 
        opkg install socat
        cd /srv/turris-omnia-tls/acme.sh
-       ./acme.sh --install --home /srv/.acme.sh --no-profile --nocron --email [YOUREMAIL]
+       ./acme.sh --install --home /srv/turris-omnia-tls/var/acme --no-profile --nocron --email [YOUREMAIL]
        ./acme.sh --set-default-ca --home /srv/.acme.sh --server letsencrypt
 
 1. Disable the existing SSL configuration by removing the
@@ -111,7 +111,7 @@ Run the following:
     git pull
     git submodule update --remote acme.sh
     cd acme.sh
-    ./acme.sh --install --home /srv/.acme.sh --no-profile --nocron
+    ./acme.sh --install --home /srv/turris-omnia-tls/var/acme --no-profile --nocron
 
 ## License
 

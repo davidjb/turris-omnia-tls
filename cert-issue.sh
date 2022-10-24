@@ -1,21 +1,23 @@
 #!/bin/sh
 certhome="/etc/lighttpd/certs"
+tothome="/srv/turris-omnia-tls"
+acmehome="${tothome}/var/acme"
 ca_path="/etc/ssl/certs"
-webroot="/src/turris-omnia-tls/var/webroot"
+webroot="${tothome}/var/webroot"
 domain="$1"
 
 mkdir -p "$certhome"
 mkdir -p "$webroot"
 
-/srv/.acme.sh/acme.sh \
-    --home "/srv/.acme.sh" \
+"${acmehome}/acme.sh" \
+    --home "${acmehome}" \
     --issue \
-    --webroot "$webroot" \
-    --domain "$domain" \
+    --webroot "${webroot}" \
+    --domain "${domain}" \
     --keylength 4096 \
-    --certhome "$certhome" \
-    --ca-path "$ca_path" \
-    --pre-hook "/srv/turris-omnia-tls/pre-hook.sh '$domain'" \
-    --post-hook "/srv/turris-omnia-tls/post-hook.sh '$domain'" \
-    --renew-hook "/srv/turris-omnia-tls/renew-hook.sh '$domain'" \
-    --reloadcmd "/srv/turris-omnia-tls/reloadcmd.sh '$domain'"
+    --certhome "${certhome}" \
+    --ca-path "${ca_path}" \
+    --pre-hook "${tothome}/pre-hook.sh '$domain'" \
+    --post-hook "${tothome}/post-hook.sh '$domain'" \
+    --renew-hook "${tothome}/renew-hook.sh '$domain'" \
+    --reloadcmd "${tothome}/reloadcmd.sh '$domain'"
