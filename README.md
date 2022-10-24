@@ -45,6 +45,17 @@ external storage on a Turris device, but you can install wherever you'd like.
 
        TOT_EMAIL="foo@example.com" TOT_FQDN="turris.example.com" /srv/turris-omnia-tls/install.sh
 
+## Uninstallation
+
+Note that this will not touch issued certificates, which will be left in place
+under `/etc/lighttpd/certs`. Also, `acme.sh` related state information will be
+left untouched under the `/srv/turris-omnia-tls/var/` hierarchy.
+
+1. Run the `uninstall.sh` script to uninstall modifications performed by the
+   `install.sh` script:
+
+       /srv/turris-omnia-tls/uninstall.sh
+
 ## Issuing more certificates
 
 Run the following:
