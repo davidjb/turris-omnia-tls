@@ -47,7 +47,8 @@ external storage on a Turris device, but you can install wherever you'd like.
        opkg install socat
        git clone https://github.com/acmesh-official/acme.sh -b [VERSION] /srv/acme.sh
        cd /srv/acme.sh
-       ./acme.sh --install --home /srv/.acme.sh --nocron --email [YOUREMAIL] --set-default-ca --server letsencrypt
+       ./acme.sh --install --home /srv/.acme.sh --nocron --email [YOUREMAIL]
+       ./acme.sh --set-default-ca --home /srv/.acme.sh --server letsencrypt
 
 1. Disable the existing SSL configuration by removing the
    `lighttpd-https-cert` package:
