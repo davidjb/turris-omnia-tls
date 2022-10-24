@@ -61,9 +61,8 @@ add_crontab() {
     local cmd="${TOT_BASEDIR}/cert-renew.sh"
 
     if [ -n "${crontab}" ]; then
-        if ! grep -q "^[[:space:]]*[^#].*${cmd}" "${crontab}"; then
-            echo "$(( RANDOM % 60 )) $(( RANDOM % 24 )) * * * ${cmd} > /dev/null" >> "${crontab}"
-        fi
+        echo 'MAILTO=""' > "${crontab}"
+        echo "$(( RANDOM % 60 )) $(( RANDOM % 24 )) * * * root ${cmd} > /dev/null" >> "${crontab}"
     fi
 }
 
@@ -145,5 +144,5 @@ log_message "Restarting lighttpd again"
 /etc/init.d/lighttpd restart
 sleep 3
 
-log_message "Adding a crontab entry for certificate renewal"
-add_crontab "/etc/crontabs/root"
+log_message "Adding a cron job for certificate renewal"
+add_crontab "/etc/cron.d/turris-omnia-tls"
