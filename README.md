@@ -35,61 +35,15 @@ external storage on a Turris device, but you can install wherever you'd like.
        opkg install git-http
        git clone --recurse-submodules https://github.com/davidjb/turris-omnia-tls.git /srv/turris-omnia-tls
 
-1. Install the `acme.sh` client and its dependency, `socat`; taking care to
-   substitute `[YOUREMAIL]` with correct values:
+1. Run the `install.sh` script and answer the questions:
 
-       opkg install socat
-       cd /srv/turris-omnia-tls/acme.sh
-       ./acme.sh --install --home /srv/turris-omnia-tls/var/acme --no-profile --nocron --email [YOUREMAIL]
-       ./acme.sh --set-default-ca --home /srv/.acme.sh --server letsencrypt
+       /srv/turris-omnia-tls/install.sh
 
-1. Disable the existing SSL configuration by removing the
-   `lighttpd-https-cert` package:
+1. Alternatively, the answer to the questions can be provided via environment
+   variables for non-interactive/scripted use (check the source of `install.sh`
+   for a current list of supported variables):
 
-       opkg remove lighttpd-https-cert
-
-1. Stop `updater` from automatically reinstalling the `lighttpd-https-cert`
-   package:
-
-       cp /srv/turris-omnia-tls/updater_custom.lua /etc/updater/conf.d/no-upstream-ssl.lua
-
-1. Make sure the `lighttpd-mod-openssl` package is installed:
-
-       opkg install lighttpd-mod-openssl
-
-1. Reconfigure lighttpd to support the `acme` webroot, taking care to replace
-   the %TOT_BASEDIR% placeholder inside the template file:
-
-       sed -e "s|%TOT_BASEDIR%|/srv/turris-omnia-tls|g" /srv/turris-omnia-tls/lighttpd_webroot.conf > /etc/lighttpd/conf.d/39-acme-webroot.conf
-
-1. Restart `lighttpd`:
-
-       /etc/init.d/lighttpd restart
-
-1. Issue the certificate, taking care to specify your FQDN in place of
-   `[HOSTNAME.DOMAIN.COM]`:
-
-       /srv/turris-omnia-tls/cert-issue.sh [HOSTNAME.DOMAIN.COM]
-
-1. Reconfigure lighttpd to enable TLS and to use the new certificates, taking
-   care to replace the %TOT_FQDN% and %TOT_HOSTNAME% placeholders inside the
-   template file:
-
-       sed \
-           -e "s|%TOT_FQDN%|turris.example.com|g" \
-           -e "s|%TOT_HOSTNAME%|turris|g" \
-           /srv/turris-omnia-tls/lighttpd_tls.conf > /etc/lighttpd/conf.d/40-acme-tls.conf
-
-1. Restart `lighttpd` again:
-
-       /etc/init.d/lighttpd restart
-
-1. Add crontab entry for renewal; pick a random minute and hour:
-
-       echo '34 0 * * * /srv/turris-omnia-tls/cert-renew.sh > /dev/null' >> /etc/crontabs/root
-
-   The renewal process will automatically re-use the settings for certificates
-   that were issued.
+       TOT_EMAIL="foo@example.com" TOT_FQDN="turris.example.com" /srv/turris-omnia-tls/install.sh
 
 ## Issuing more certificates
 
@@ -108,11 +62,9 @@ where `extra.example.com` is the name of your domain.
 Run the following:
 
     cd /srv/turris-omnia-tls
-    git pull
-    git submodule update --remote acme.sh
-    cd acme.sh
-    ./acme.sh --install --home /srv/turris-omnia-tls/var/acme --no-profile --nocron
-
+    git pull --recurse-submodules
+    ./install.sh
+   
 ## License
 
 MIT. See LICENSE.txt.

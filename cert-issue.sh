@@ -1,6 +1,17 @@
-#!/bin/sh
+#!/usr/bin/env bash
+#
+# Copyright (C) 2018-2022 David Beitey <david@davidjb.com>
+# Copyright (C) 2022 David Härdeman <david@hardeman.nu>
+#
+# SPDX-License-Identifier: MIT
+#
+# This script is used once for the initial issuance of a certificate.
+
+set -o nounset -o pipefail -o errexit -o errtrace
+
+cd "${0%/*}"
+tothome="$(pwd)"
 certhome="/etc/lighttpd/certs"
-tothome="/srv/turris-omnia-tls"
 acmehome="${tothome}/var/acme"
 ca_path="/etc/ssl/certs"
 webroot="${tothome}/var/webroot"
