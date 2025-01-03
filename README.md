@@ -14,6 +14,7 @@ using lighttpd.
 
 ## Key features
 
+* **Requires Turris OS 7.1+ (`nftables`)**
 * Uses [Acme.sh](https://github.com/acmesh-official/acme.sh) client for free TLS certificates from [Let's Encrypt](https://letsencrypt.org/)
 * Uses hook scripts to simplify issue and renewal process
 * Opportunistically opens and closes firewall port 80
