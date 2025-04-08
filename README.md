@@ -17,6 +17,7 @@ using lighttpd.
 * **Requires Turris OS 7.1+ (`nftables`)**
 * Uses [Acme.sh](https://github.com/acmesh-official/acme.sh) client for free TLS certificates from [Let's Encrypt](https://letsencrypt.org/)
 * Uses hook scripts to simplify issue and renewal process
+  * Generates a `.pem` file containing both certificate and key
 * Opportunistically opens and closes firewall port 80
 * Restarts lighttpd to deploy certificates
 * Configures lighttpd for TLSv1.3 only following the [Mozilla SSL Configuration
