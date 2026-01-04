@@ -126,6 +126,14 @@ Run the following; after `fetch`ing, you'll see the latest version tag:
     git checkout [VERSION]
     ./acme.sh --install --home /srv/.acme.sh --nocron
 
+To check the upgrade was successful, you can run the `cert-renew.sh` script directly to call
+`acme.sh`:
+
+    /srv/turris-omnia-tls/cert-renew.sh
+
+Any certificates in need of renewal will process and anything else will be skipped. For the
+impatient, temporarily add `--force` into this script and run it.
+
 ## License
 
-MIT. See LICENSE.txt.
+MIT. See [`LICENSE.txt`](LICENSE.txt).
