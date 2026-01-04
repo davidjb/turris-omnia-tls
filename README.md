@@ -69,8 +69,12 @@ external storage on a Turris device, but you can install wherever you'd like.
    `/etc/lighttpd/conf.d/90-turris-root.conf` to comment out these lines:
 
        $SERVER["socket"] == "*:80"    {  }
-       $SERVER["socket"] == "[::]:80" {   }
+       $SERVER["socket"] == "[::]:80" {  }
 
+   You can run this command to remove the lines automatically, noting that it will also wipe out anything else of yours matching the pattern:
+
+         sed -i 's/^.*:80.*$//g' /etc/lighttpd/conf.d/90-turris-root.conf
+   
 1. Stop lighttpd; we will enable it again shortly:
 
        /etc/init.d/lighttpd stop
